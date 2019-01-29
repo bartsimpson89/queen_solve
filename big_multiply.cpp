@@ -33,36 +33,33 @@ int freeList(struct dataNode *head)
 	free(tmp);
 	return 0;
 }
+
+struct dataNode *newNode(struct dataNode *preNode, int data)
+{
+	struct dataNode *tmpNode = (struct dataNode *)malloc(sizeof(struct dataNode));
+	tmpNode->next = NULL;
+	tmpNode->pre = preNode;
+	tmpNode->data = data;
+	if (preNode != NULL)
+		preNode->next = tmpNode;
+	return tmpNode;
+}
+
+
 struct dataNode *copyList(struct dataNode *src)
 {
 	struct dataNode *src_head = src;
 	struct dataNode *head = NULL;
-	struct dataNode *result = NULL;
+	struct dataNode *list = NULL;
 	while(src->next!=NULL)
 	{
-		struct dataNode *tmpNode = (struct dataNode *)malloc(sizeof(struct dataNode));
-		tmpNode->next=NULL;
-		tmpNode->pre=NULL;
-		tmpNode->data=src->data;
 		if (src == src_head)
-		{
-			head=tmpNode;
-		}
+			head = list = newNode(list, src->data);
 		else
-		{
-			tmpNode->pre = result;
-			result->next=tmpNode;
-		}
-		result = tmpNode;
-		src=src->next;
-	}
-               
-	struct dataNode *tmpNode = (struct dataNode *)malloc(sizeof(struct dataNode));
-	tmpNode->data = src->data;
-	tmpNode->next = NULL;
-	tmpNode->pre = result;
-	result->next = tmpNode;
-	result = tmpNode;
+			list = newNode(list, src->data);
+		src = src->next;
+	} 
+	list = newNode(list, src->data);
 	return head;
 }
 
@@ -76,16 +73,6 @@ int compareListLen(struct dataNode *head1, struct dataNode *head2)
 	return (head1->next == NULL) ? 0 : 1;
 }
 
-struct dataNode *newNode(struct dataNode *preNode, int data)
-{
-	struct dataNode *tmpNode = (struct dataNode *)malloc(sizeof(struct dataNode));
-	tmpNode->next = NULL;
-	tmpNode->pre = preNode;
-	tmpNode->data = data;
-	if (preNode != NULL)
-		preNode->next = tmpNode;
-	return tmpNode;
-}
 
 struct dataNode *addList(struct dataNode *head1,struct dataNode *head2)
 {
@@ -183,7 +170,6 @@ int main(void)
 	for(int i=data2_len - 1; i>=0;i--)
 	{
 		struct dataNode *result = getResult(data, data_len, data2[i], data2_len-i-1);
-
 		result2 = addList(result, result2);
 
 		printList(result2);
@@ -193,6 +179,3 @@ int main(void)
 	freeList(result2);
 	return 0;
 }
-
-
-
